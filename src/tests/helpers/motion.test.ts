@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { durationMs, heroTextSettleMs, isHeroTextSettled, readReducedMotion } from "@/helpers/motion";
+import {
+  animationNameOf,
+  durationMs,
+  heroTextSettleMs,
+  isHeroTextSettled,
+  readReducedMotion,
+} from "@/helpers/motion";
 
 describe("readReducedMotion", () => {
   it("is true only when the query matches", () => {
@@ -14,6 +20,15 @@ describe("heroTextSettleMs", () => {
     expect(durationMs("800ms")).toBe(800);
     expect(durationMs("1.4s")).toBe(1400);
     expect(heroTextSettleMs("800ms", "1400ms")).toBe(2200);
+  });
+});
+
+describe("animationNameOf", () => {
+  it("reads only a string animation name", () => {
+    expect(animationNameOf(null)).toBeNull();
+    expect(animationNameOf({})).toBeNull();
+    expect(animationNameOf({ animationName: 1 })).toBeNull();
+    expect(animationNameOf({ animationName: "hero-fade" })).toBe("hero-fade");
   });
 });
 

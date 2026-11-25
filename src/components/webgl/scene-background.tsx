@@ -3,12 +3,12 @@
 import { useEffect, useState, type ReactElement } from "react";
 import { SceneField } from "@/components/webgl/scene-field";
 import { measure } from "@/data/design";
-import { heroTextAnimation, heroTextSettleMs, isHeroTextSettled } from "@/helpers/motion";
+import { animationNameOf, heroTextAnimation, heroTextSettleMs, isHeroTextSettled } from "@/helpers/motion";
 
 const readPlayState = (element: HTMLElement): string | null => {
   const animations = element.getAnimations();
   for (const animation of animations) {
-    if (animation.animationName === heroTextAnimation) return animation.playState;
+    if (animationNameOf(animation) === heroTextAnimation) return animation.playState;
   }
   return null;
 };

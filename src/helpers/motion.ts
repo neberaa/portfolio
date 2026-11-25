@@ -12,6 +12,13 @@ export const durationMs = (value: string): number => {
 export const heroTextSettleMs = (delay: string, duration: string): number =>
   durationMs(delay) + durationMs(duration);
 
+export const animationNameOf = (animation: unknown): string | null => {
+  if (typeof animation !== "object" || animation === null) return null;
+  if (!("animationName" in animation)) return null;
+  const name = animation.animationName;
+  return typeof name === "string" ? name : null;
+};
+
 export const isHeroTextSettled = (animationName: string, playState: string | null): boolean => {
   const names = animationName.split(",");
   let fades = false;
