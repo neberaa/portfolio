@@ -52,7 +52,7 @@ body {
 }
 
 .hero-copy {
-  animation: hero-fade var(--hero-fade) var(--ease-out) both;
+  animation: hero-fade var(--hero-fade) var(--ease-screen) var(--hero-fade-delay) both;
 }
 
 .explore-label {
@@ -108,6 +108,8 @@ body {
   .rise-in,
   .hero-copy {
     animation: none;
+    opacity: 1;
+    transform: none;
   }
 
   .accordion-chevron,
