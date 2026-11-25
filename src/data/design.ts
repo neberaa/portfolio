@@ -58,6 +58,8 @@ export const measure = {
   lift: -4,
   scrollMs: 850,
   scrollDuration: "850ms",
+  accordionDuration: "520ms",
+  easeOut: "cubic-bezier(0.22, 1, 0.36, 1)",
   hoverMs: 0.2,
   breakpoint: "768px",
 } as const;
@@ -159,4 +161,6 @@ export const designStyle = {
   "--title-width": measure.titleWidth,
   "--heading-width": measure.headingWidth,
   "--scroll-duration": measure.scrollDuration,
+  "--accordion-duration": measure.accordionDuration,
+  "--ease-out": measure.easeOut,
 } as CSSProperties;

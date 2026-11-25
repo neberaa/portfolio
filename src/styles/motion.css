@@ -14,7 +14,7 @@ body {
 .screen-track {
   height: 100%;
   transform: translate3d(0, calc(var(--screen-index) * -100dvh), 0);
-  transition: transform var(--scroll-duration) cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform var(--scroll-duration) var(--ease-out);
 }
 
 .screen-track[data-reduced="true"] {
@@ -91,5 +91,11 @@ body {
   .scroll-cue,
   .rise-in {
     animation: none;
+  }
+
+  .accordion-chevron,
+  .accordion-panel,
+  .accordion-body {
+    transition: none;
   }
 }
