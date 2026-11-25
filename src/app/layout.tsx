@@ -19,6 +19,12 @@ export const metadata: Metadata = {
     description: site.description,
     type: "website",
     locale: "en_GB",
+    siteName: site.name,
+  },
+  twitter: {
+    card: "summary",
+    title: site.title,
+    description: site.description,
   },
 };
 
