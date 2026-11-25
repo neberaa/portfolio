@@ -96,7 +96,20 @@ body {
 
   .accordion-chevron,
   .accordion-panel,
-  .accordion-body {
+  .accordion-body,
+  .nav-link,
+  .nav-underline,
+  .type-brand,
+  .type-menu,
+  .type-link,
+  .link-row,
+  .link-row svg,
+  .icon-link,
+  .icon-link svg,
+  .menu-button,
+  .menu-button svg,
+  .scroll-cue-button,
+  .accordion-trigger {
     transition: none;
   }
 }

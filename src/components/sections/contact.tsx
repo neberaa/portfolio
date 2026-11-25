@@ -1,6 +1,6 @@
 import { Mail } from "lucide-react";
 import type { ReactElement } from "react";
-import { layoutClass, measure, palette, typeClass } from "@/data/design";
+import { layoutClass, measure, typeClass } from "@/data/design";
 import { screens } from "@/data/sections";
 import { site } from "@/data/site";
 import { getScreen } from "@/helpers/sections";
@@ -19,13 +19,11 @@ export const Contact = (): ReactElement => (
         <h2 className={typeClass.title}>Have a project or a team to build?</h2>
         <div className={`mt-10 ${layoutClass.stack}`}>
           <a href={site.emailHref} className={layoutClass.linkRow}>
-            <Mail color={palette.cyan} size={measure.iconSm} strokeWidth={measure.iconStroke} aria-hidden />
+            <Mail size={measure.iconSm} strokeWidth={measure.iconStroke} aria-hidden />
             {site.email}
           </a>
           <a href={site.linkedIn} target="_blank" rel="noreferrer" className={layoutClass.linkRow}>
-            <span className="text-cyan">
-              <LinkedInIcon />
-            </span>
+            <LinkedInIcon />
             {site.linkedInLabel}
           </a>
         </div>

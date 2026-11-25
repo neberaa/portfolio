@@ -2,7 +2,7 @@
 
 import { Mail, Menu, X } from "lucide-react";
 import { useState, type ReactElement } from "react";
-import { layoutClass, measure, palette, typeClass } from "@/data/design";
+import { layoutClass, measure, typeClass } from "@/data/design";
 import { screens } from "@/data/sections";
 import { site } from "@/data/site";
 import { getActiveNavId, getNavSections } from "@/helpers/sections";
@@ -79,10 +79,10 @@ export const Header = (): ReactElement => {
             AN
           </button>
           <span className={layoutClass.divider} aria-hidden />
-          <a href={site.emailHref} aria-label="Email" className="text-cyan">
-            <Mail color={palette.cyan} size={measure.iconSm} strokeWidth={measure.iconStroke} />
+          <a href={site.emailHref} aria-label="Email" className="icon-link">
+            <Mail size={measure.iconSm} strokeWidth={measure.iconStroke} />
           </a>
-          <a href={site.linkedIn} aria-label="LinkedIn" target="_blank" rel="noreferrer" className="text-cyan">
+          <a href={site.linkedIn} aria-label="LinkedIn" target="_blank" rel="noreferrer" className="icon-link">
             <LinkedInIcon />
           </a>
         </div>
@@ -100,9 +100,9 @@ export const Header = (): ReactElement => {
           onClick={toggleMenu}
         >
           {open ? (
-            <X color={palette.ink} size={measure.iconMd} strokeWidth={measure.iconStroke} />
+            <X size={measure.iconMd} strokeWidth={measure.iconStroke} />
           ) : (
-            <Menu color={palette.ink} size={measure.iconMd} strokeWidth={measure.iconStroke} />
+            <Menu size={measure.iconMd} strokeWidth={measure.iconStroke} />
           )}
         </button>
       </div>

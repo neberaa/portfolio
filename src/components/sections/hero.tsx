@@ -2,7 +2,7 @@
 
 import { ArrowDown } from "lucide-react";
 import type { ReactElement } from "react";
-import { layoutClass, measure, palette, typeClass } from "@/data/design";
+import { layoutClass, measure, typeClass } from "@/data/design";
 import { useSiteScroll } from "@/hooks/use-site-scroll";
 
 export const Hero = (): ReactElement => {
@@ -31,7 +31,7 @@ export const Hero = (): ReactElement => {
       </div>
       <button type="button" onClick={goAbout} className={`${layoutClass.cue} ${typeClass.explore}`}>
         Scroll to explore
-        <ArrowDown className="scroll-cue" color={palette.cyan} size={measure.iconSm} strokeWidth={measure.iconStroke} aria-hidden />
+        <ArrowDown className="scroll-cue" size={measure.iconSm} strokeWidth={measure.iconStroke} aria-hidden />
       </button>
     </section>
   );

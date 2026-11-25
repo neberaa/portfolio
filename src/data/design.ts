@@ -63,6 +63,8 @@ export const measure = {
   easeOut: "cubic-bezier(0.22, 1, 0.36, 1)",
   easeScreen: "cubic-bezier(0.65, 0, 0.35, 1)",
   hoverMs: 0.2,
+  hoverDuration: "200ms",
+  hoverShift: "-3px",
   breakpoint: "768px",
 } as const;
 
@@ -167,4 +169,6 @@ export const designStyle = {
   "--accordion-duration": measure.accordionDuration,
   "--ease-out": measure.easeOut,
   "--ease-screen": measure.easeScreen,
+  "--hover-duration": measure.hoverDuration,
+  "--hover-shift": measure.hoverShift,
 } as CSSProperties;
