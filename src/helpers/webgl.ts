@@ -47,8 +47,8 @@ export const heroMotion = {
   introSeconds: 2.8,
   presenceStep: 0.06,
   followStep: 0.08,
-  followX: 2.4,
-  followY: 1.35,
+  followX: 5.2,
+  followY: 3,
 } as const;
 
 export type HeroShape = {
