@@ -184,6 +184,16 @@ button,
   max-width: var(--frame);
 }
 
+.hero-veil {
+  background: radial-gradient(
+    ellipse at center,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 72%, transparent) 24%,
+    color-mix(in srgb, var(--background) 28%, transparent) 58%,
+    transparent 100%
+  );
+}
+
 .hero-copy {
   position: relative;
   z-index: 10;
