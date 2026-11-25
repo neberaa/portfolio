@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/system.css";
+@import "../styles/motion.css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-graphite: var(--graphite);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-quiet: var(--quiet);
+  --color-cyan: var(--cyan);
+  --color-blue: var(--blue);
+  --font-sans: var(--font-body-face), "IBM Plex Sans", sans-serif;
+  --font-display: var(--font-display-face), "Space Grotesk", sans-serif;
+  --font-mono: var(--font-code-face), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--cyan) 35%, transparent);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: var(--line) solid var(--cyan);
+  outline-offset: var(--outline-offset);
+}

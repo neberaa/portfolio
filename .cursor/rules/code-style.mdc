@@ -1,0 +1,43 @@
+---
+description: TypeScript style, folder boundaries, and unit tests for the portfolio
+alwaysApply: true
+---
+
+# Code style
+
+TypeScript only. Do not add `.js` or `.jsx` files.
+
+Use arrow functions assigned to `const`. Do not use `function` declarations or `function` expressions. Give exported functions an explicit return type. Prefer `import type`, `satisfies`, `as const`, and unions over `enum` and `any`.
+
+```ts
+export const getExplorePercent = (index: number, count: number): number =>
+  count <= 1 ? 0 : Math.round((index / (count - 1)) * 100);
+```
+
+Keep each concept in its own folder under `src/`:
+
+- `components/` — markup and composition only
+- `hooks/` — stateful React logic
+- `helpers/` — pure functions
+- `data/` — content and constants
+- `styles/` — CSS
+- `types/` — shared types
+- `tests/` — unit tests only
+
+A component imports those pieces. It does not declare data, shared types, or business logic inline.
+
+Do not write an anonymous function at the call site. Name it with a `const` arrow and pass that name. This includes JSX handlers and array callbacks. Test-runner callbacks (`describe`, `it`) stay as the runner requires.
+
+```tsx
+const goHome = (): void => go("home");
+
+<button type="button" onClick={goHome}>
+  AN
+</button>
+```
+
+Do not hardcode `px` or one-off sizes in a component. Declare the value once in `src/data/design.ts` and reuse the exported const or the CSS variable it injects.
+
+Typography comes from `src/styles/system.css` (`type-display`, `type-title`, `type-heading`, `type-body`, `type-eyebrow`, `type-meta`, `type-nav`, `type-brand`). Use those classes. Do not repeat font size, line height, or letter spacing on a component.
+
+Every exported helper and hook has a unit test under `src/tests/`, mirroring the source path: `src/helpers/scroll.ts` is tested by `src/tests/helpers/scroll.test.ts`. The test calls the function directly. Test a hook with `renderHook`. Do not add a test that only renders a component, and do not place test files next to source.
