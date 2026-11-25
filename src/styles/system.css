@@ -271,11 +271,32 @@
   transform: translateY(-50%);
 }
 
+.explore-meter {
+  display: flex;
+  width: var(--line);
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-brand);
+}
+
 .explore-track {
   position: relative;
   width: var(--line);
   height: var(--progress);
   background: color-mix(in srgb, var(--ink) 15%, transparent);
+}
+
+.explore-fill {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  background: var(--cyan);
+}
+
+.explore-percent {
+  width: var(--percent-width);
+  text-align: center;
 }
 
 .stack {
