@@ -1,3 +1,9 @@
+a[href],
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
 .type-display {
   font-family: var(--font-display), "Space Grotesk", sans-serif;
   font-size: var(--type-display);
