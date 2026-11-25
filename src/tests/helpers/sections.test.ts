@@ -52,6 +52,6 @@ describe("getActiveNavId", () => {
   });
 
   it("ignores an unknown id", () => {
-    expect(getActiveNavId("void")).toBeNull();
+    expect(getActiveNavId("unknown")).toBeNull();
   });
 });

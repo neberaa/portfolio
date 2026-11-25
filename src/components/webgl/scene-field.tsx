@@ -325,7 +325,7 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
   );
 };
 
-export const VoidField = (): ReactElement | null => {
+export const SceneField = (): ReactElement | null => {
   const [count, setCount] = useState<number | null>(null);
   const [compact, setCompact] = useState(false);
 

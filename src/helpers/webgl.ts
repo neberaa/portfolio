@@ -44,7 +44,7 @@ export const buildPointColors = (points: readonly Point[]): number[] =>
   });
 
 export const heroMotion = {
-  introSeconds: 2.8,
+  introSeconds: 0.55,
   presenceStep: 0.06,
   exitStep: 0.18,
   travelStep: 0.045,
@@ -99,7 +99,7 @@ export const smoothStep = (amount: number): number => {
 
 export const introScale = (time: number, duration: number): number => {
   if (duration <= 0) return 1;
-  return 0.42 + smoothStep(time / duration) * 0.58;
+  return 0.72 + smoothStep(time / duration) * 0.28;
 };
 
 export const introFade = (time: number, duration: number): number => {

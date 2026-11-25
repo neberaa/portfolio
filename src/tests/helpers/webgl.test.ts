@@ -82,7 +82,7 @@ describe("mixHex", () => {
 
 describe("introScale", () => {
   it("opens from a smaller ring to full size", () => {
-    expect(introScale(0, 2)).toBeCloseTo(0.42);
+    expect(introScale(0, 2)).toBeCloseTo(0.72);
     expect(introScale(2, 2)).toBeCloseTo(1);
     expect(introScale(6, 2)).toBeCloseTo(1);
     expect(introScale(1, 0)).toBe(1);

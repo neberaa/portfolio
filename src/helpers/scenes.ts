@@ -80,7 +80,7 @@ const leadershipShapes = [
 const contactShapes = [makePolygon(6, 2.4, 0.18, 0.62, 5, 1.4, 0x00c9d8, 0.06, 0.8)] as const;
 
 export const screenScenes: readonly ScreenScene[] = [
-  scene("home", 0, 0, 1, 0, 2.8, 0.6, 1.4, 0, 0, 0, 1, 0.18, "50%", "50%", heroShapes),
+  scene("home", 0, 0, 1, 0, 0.55, 0.6, 1.4, 0, 0, 0, 1, 0.18, "50%", "50%", heroShapes),
   scene("about", 4.8, -1.8, 0.78, 0.55, 0.7, 0.35, 2.6, -1.2, 0.35, 0.04, 0.16, 0.06, "104%", "82%", aboutShapes),
   scene("skills", 4.4, 2.6, 0.58, 0.78, 0.6, 2.4, -0.4, -1.8, -0.5, -0.08, 0.12, 0.05, "96%", "6%", skillShapes),
   scene("projects", -5.4, 2.5, 0.92, 0.46, 0.75, -2.1, 1.3, -1.4, 0.2, 0.03, 0.14, 0.05, "-8%", "8%", projectShapes),
