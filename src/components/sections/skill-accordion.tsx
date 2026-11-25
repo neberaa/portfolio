@@ -60,7 +60,7 @@ const SkillAccordionItem = ({ group, index, open, onToggle }: SkillAccordionItem
 };
 
 export const SkillAccordion = (): ReactElement => {
-  const [openId, setOpenId] = useState(initialId);
+  const [openId, setOpenId] = useState<string>(initialId);
 
   const toggleGroup = (id: string): void => {
     setOpenId(nextAccordionId(openId, id));
