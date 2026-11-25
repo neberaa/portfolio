@@ -478,6 +478,24 @@ button.type-brand:focus-visible,
   margin-top: var(--gap-tight);
 }
 
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  width: var(--cursor-ring);
+  height: var(--cursor-ring);
+  border: var(--line) solid var(--cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 var(--cursor-glow) color-mix(in srgb, var(--cyan) 45%, transparent);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.cursor-ring[data-on="true"] {
+  opacity: 1;
+}
+
 @media (min-width: 768px) {
   .pad-page,
   .pad-section {

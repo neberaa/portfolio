@@ -5,6 +5,7 @@ import { personJsonLd, site } from "@/data/site";
 import { plexMono, plexSans, spaceGrotesk } from "@/fonts";
 import { getSiteUrl } from "@/helpers/site-url";
 import { SiteScroll } from "@/components/layout/site-scroll";
+import { CursorRing } from "@/components/ui/cursor-ring";
 import { VoidBackground } from "@/components/webgl/void-background";
 import "./globals.css";
 
@@ -41,6 +42,7 @@ const RootLayout = ({ children }: RootLayoutProps): ReactElement => (
         <VoidBackground />
         {children}
       </SiteScroll>
+      <CursorRing />
     </body>
   </html>
 );

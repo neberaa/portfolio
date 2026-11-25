@@ -65,6 +65,8 @@ export const measure = {
   hoverMs: 0.2,
   hoverDuration: "200ms",
   hoverShift: "-3px",
+  cursorRing: "3.25rem",
+  cursorGlow: "0.75rem",
   breakpoint: "768px",
 } as const;
 
@@ -171,4 +173,6 @@ export const designStyle = {
   "--ease-screen": measure.easeScreen,
   "--hover-duration": measure.hoverDuration,
   "--hover-shift": measure.hoverShift,
+  "--cursor-ring": measure.cursorRing,
+  "--cursor-glow": measure.cursorGlow,
 } as CSSProperties;
