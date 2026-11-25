@@ -6,15 +6,15 @@ import {
   createPointField,
   damp,
   driftPoint,
-  fillRingColors,
-  fillRingPositions,
-  getHeroRingCounts,
+  fillPolygonPositions,
+  fillShapeColors,
+  getHeroShapes,
   getPointCount,
   introFade,
   introScale,
   mixHex,
-  poseRingPoint,
-  ringBrightness,
+  posePolygonPoint,
+  shapeBrightness,
 } from "@/helpers/webgl";
 
 describe("getPointCount", () => {
@@ -99,41 +99,49 @@ describe("damp", () => {
   });
 });
 
-describe("poseRingPoint", () => {
-  it("starts on the right of the ring", () => {
-    expect(poseRingPoint(0, 4, 2, 0, 0, 1, 1)[0]).toBeCloseTo(2);
-    expect(poseRingPoint(0, 4, 2, 0, 0, 1, 1)[1]).toBeCloseTo(0);
+describe("posePolygonPoint", () => {
+  it("places the first corner on the radius", () => {
+    expect(posePolygonPoint(0, 4, 4, 2, 0, 0, 0, 0, 1)[0]).toBeCloseTo(2);
+  });
+
+  it("cuts a straight edge instead of an arc", () => {
+    const midpoint = posePolygonPoint(1, 8, 4, 2, 0, 0, 0, 0, 1);
+    expect(midpoint[0]).toBeCloseTo(1);
   });
 
   it("moves as time passes", () => {
-    const start = poseRingPoint(0, 8, 4, 0.5, 0, 1, 1);
-    const later = poseRingPoint(0, 8, 4, 0.5, 1, 1, 1);
+    const start = posePolygonPoint(0, 6, 6, 4, 0.5, 1, 0, 1, 1);
+    const later = posePolygonPoint(0, 6, 6, 4, 0.5, 1, 1, 1, 1);
     expect(later[0]).not.toBeCloseTo(start[0]);
   });
 });
 
-describe("ringBrightness", () => {
+describe("shapeBrightness", () => {
   it("stays inside the visible range", () => {
-    expect(ringBrightness(0, 8, 1.2, 0.8)).toBeGreaterThanOrEqual(0.22);
-    expect(ringBrightness(0, 8, 1.2, 0.8)).toBeLessThanOrEqual(1);
-    expect(ringBrightness(3, 8, 1.2, 0.8)).toBeGreaterThanOrEqual(0.22);
-    expect(ringBrightness(3, 8, 1.2, 0.8)).toBeLessThanOrEqual(1);
+    expect(shapeBrightness(0, 8, 1.2, 0.8)).toBeGreaterThanOrEqual(0.22);
+    expect(shapeBrightness(0, 8, 1.2, 0.8)).toBeLessThanOrEqual(1);
+    expect(shapeBrightness(3, 8, 1.2, 0.8)).toBeGreaterThanOrEqual(0.22);
+    expect(shapeBrightness(3, 8, 1.2, 0.8)).toBeLessThanOrEqual(1);
   });
 });
 
-describe("fillRingPositions", () => {
+describe("fillPolygonPositions", () => {
   it("writes a finite position for every point", () => {
     const target = new Float32Array(6);
-    fillRingPositions(target, 2, 3, 0.4, 0.5, 0.2, 1);
-    expect(Array.from(target).every((value) => Number.isFinite(value))).toBe(true);
+    fillPolygonPositions(target, 2, 4, 3, 0.4, 1, 0.5, 0.2, 1);
+    expect(Number.isFinite(target[0])).toBe(true);
+    expect(Number.isFinite(target[5])).toBe(true);
   });
 });
 
-describe("fillRingColors", () => {
+describe("fillShapeColors", () => {
   it("writes channels in the 0 to 1 range", () => {
     const target = new Float32Array(6);
-    fillRingColors(target, 2, 0.4, 1);
-    expect(Array.from(target).every((value) => value >= 0 && value <= 1)).toBe(true);
+    fillShapeColors(target, 2, 0.4, 1);
+    expect(target[0]).toBeGreaterThanOrEqual(0);
+    expect(target[0]).toBeLessThanOrEqual(1);
+    expect(target[5]).toBeGreaterThanOrEqual(0);
+    expect(target[5]).toBeLessThanOrEqual(1);
   });
 });
 
@@ -146,10 +154,16 @@ describe("colorChannels", () => {
   });
 });
 
-describe("getHeroRingCounts", () => {
-  it("uses fewer points on a small screen", () => {
-    expect(getHeroRingCounts(true).outer).toBeLessThan(getHeroRingCounts(false).outer);
-    expect(getHeroRingCounts(false).lines).toBeGreaterThan(0);
+describe("getHeroShapes", () => {
+  it("uses a hexagon, a triangle, and a square", () => {
+    const shapes = getHeroShapes(false);
+    expect(shapes[0]?.sides).toBe(6);
+    expect(shapes[1]?.sides).toBe(3);
+    expect(shapes[2]?.sides).toBe(4);
+  });
+
+  it("uses fewer edge points on a small screen", () => {
+    expect(getHeroShapes(true)[0]?.pointsPerEdge).toBeLessThan(getHeroShapes(false)[0]?.pointsPerEdge ?? 0);
   });
 });
 

@@ -44,23 +44,48 @@ export const buildPointColors = (points: readonly Point[]): number[] =>
   });
 
 export const heroMotion = {
-  outerRadius: 5.4,
-  innerRadius: 3.5,
-  outerSpeed: 0.22,
-  innerSpeed: -0.34,
-  tilt: 0.7,
   introSeconds: 2.8,
-  lineSegments: 180,
-  outerPoints: 260,
-  innerPoints: 150,
-  smallLineSegments: 110,
-  smallOuterPoints: 150,
-  smallInnerPoints: 90,
-  outerSize: 0.07,
-  innerSize: 0.045,
   presenceStep: 0.06,
-  depth: 1.6,
 } as const;
+
+export type HeroShape = {
+  readonly sides: number;
+  readonly radius: number;
+  readonly speed: number;
+  readonly tilt: number;
+  readonly pointsPerEdge: number;
+  readonly depth: number;
+  readonly color: number;
+  readonly size: number;
+  readonly lineOpacity: number;
+};
+
+const heroShape = (
+  sides: number,
+  radius: number,
+  speed: number,
+  tilt: number,
+  pointsPerEdge: number,
+  depth: number,
+  color: number,
+  size: number,
+  lineOpacity: number,
+): HeroShape => ({ sides, radius, speed, tilt, pointsPerEdge, depth, color, size, lineOpacity });
+
+export const heroShapes: readonly HeroShape[] = [
+  heroShape(6, 5.1, 0.16, 0.58, 6, 1.5, 0x00c9d8, 0.08, 0.95),
+  heroShape(3, 3.5, -0.3, 1.12, 8, 2.2, 0x087bff, 0.06, 0.75),
+  heroShape(4, 4.3, 0.24, 0.22, 5, 1.9, 0x00c9d8, 0.055, 0.6),
+];
+
+export const smallHeroShapes: readonly HeroShape[] = [
+  heroShape(6, 4.4, 0.16, 0.58, 4, 1.5, 0x00c9d8, 0.08, 0.95),
+  heroShape(3, 3.1, -0.3, 1.12, 5, 2.2, 0x087bff, 0.06, 0.75),
+  heroShape(4, 3.7, 0.24, 0.22, 4, 1.9, 0x00c9d8, 0.055, 0.6),
+];
+
+export const getHeroShapes = (isSmallScreen: boolean): readonly HeroShape[] =>
+  isSmallScreen ? smallHeroShapes : heroShapes;
 
 export const smoothStep = (amount: number): number => {
   const t = Math.min(1, Math.max(0, amount));
@@ -80,26 +105,34 @@ export const introFade = (time: number, duration: number): number => {
 export const damp = (current: number, target: number, amount: number): number =>
   current + (target - current) * Math.min(1, Math.max(0, amount));
 
-export const poseRingPoint = (
+export const posePolygonPoint = (
   index: number,
   count: number,
+  sides: number,
   radius: number,
   tilt: number,
+  depth: number,
   time: number,
   speed: number,
   scale: number,
 ): Point => {
   const safeCount = Math.max(1, count);
-  const angle = (index / safeCount) * Math.PI * 2 + time * speed;
-  const scaled = radius * scale;
-  return [
-    Math.cos(angle) * scaled,
-    Math.sin(angle) * Math.sin(tilt) * scaled,
-    Math.sin(angle) * Math.cos(tilt) * scaled * 0.55 - heroMotion.depth,
-  ];
+  const safeSides = Math.max(3, Math.floor(sides));
+  const progress = (index / safeCount) * safeSides;
+  const edge = Math.floor(progress) % safeSides;
+  const along = progress - Math.floor(progress);
+  const corner = (vertex: number): readonly [number, number] => {
+    const angle = ((vertex % safeSides) / safeSides) * Math.PI * 2 + time * speed;
+    return [Math.cos(angle) * radius * scale, Math.sin(angle) * radius * scale];
+  };
+  const start = corner(edge);
+  const end = corner(edge + 1);
+  const x = start[0] + (end[0] - start[0]) * along;
+  const flatY = start[1] + (end[1] - start[1]) * along;
+  return [x, flatY * Math.sin(tilt), flatY * Math.cos(tilt) * 0.42 - depth];
 };
 
-export const ringBrightness = (index: number, count: number, time: number, speed: number): number => {
+export const shapeBrightness = (index: number, count: number, time: number, speed: number): number => {
   const safeCount = Math.max(1, count);
   const phase = (index / safeCount) * Math.PI * 2 + time * speed;
   const wave = Math.cos(phase);
@@ -113,17 +146,19 @@ export const colorChannels = (color: number): readonly [number, number, number] 
   (color & 255) / 255,
 ];
 
-export const fillRingPositions = (
+export const fillPolygonPositions = (
   target: Float32Array,
   count: number,
+  sides: number,
   radius: number,
   tilt: number,
+  depth: number,
   time: number,
   speed: number,
   scale: number,
 ): void => {
   for (let index = 0; index < count; index += 1) {
-    const [x, y, z] = poseRingPoint(index, count, radius, tilt, time, speed, scale);
+    const [x, y, z] = posePolygonPoint(index, count, sides, radius, tilt, depth, time, speed, scale);
     const offset = index * 3;
     target[offset] = x;
     target[offset + 1] = y;
@@ -131,31 +166,12 @@ export const fillRingPositions = (
   }
 };
 
-export const fillRingColors = (target: Float32Array, count: number, time: number, speed: number): void => {
+export const fillShapeColors = (target: Float32Array, count: number, time: number, speed: number): void => {
   for (let index = 0; index < count; index += 1) {
-    const [red, green, blue] = colorChannels(mixHex(0x087bff, 0x00c9d8, ringBrightness(index, count, time, speed)));
+    const [red, green, blue] = colorChannels(mixHex(0x087bff, 0x00c9d8, shapeBrightness(index, count, time, speed)));
     const offset = index * 3;
     target[offset] = red;
     target[offset + 1] = green;
     target[offset + 2] = blue;
   }
 };
-
-export type HeroRingCounts = {
-  readonly lines: number;
-  readonly outer: number;
-  readonly inner: number;
-};
-
-export const getHeroRingCounts = (isSmallScreen: boolean): HeroRingCounts =>
-  isSmallScreen
-    ? {
-        lines: heroMotion.smallLineSegments,
-        outer: heroMotion.smallOuterPoints,
-        inner: heroMotion.smallInnerPoints,
-      }
-    : {
-        lines: heroMotion.lineSegments,
-        outer: heroMotion.outerPoints,
-        inner: heroMotion.innerPoints,
-      };

@@ -11,13 +11,14 @@ import {
   createPointField,
   damp,
   driftPoint,
-  fillRingColors,
-  fillRingPositions,
-  getHeroRingCounts,
+  fillPolygonPositions,
+  fillShapeColors,
+  getHeroShapes,
   getPointCount,
   heroMotion,
   introFade,
   introScale,
+  type HeroShape,
   type Point,
 } from "@/helpers/webgl";
 import { useSiteScroll } from "@/hooks/use-site-scroll";
@@ -73,6 +74,13 @@ const setOpacity = (material: THREE.Material | THREE.Material[], opacity: number
   material.opacity = opacity;
 };
 
+type ShapeView = {
+  id: number;
+  shape: HeroShape;
+  line: THREE.LineLoop;
+  points: THREE.Points;
+};
+
 type FieldProps = {
   count: number;
   compact: boolean;
@@ -84,7 +92,6 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
   homeRef.current = activeId === "home";
   const presenceRef = useRef(homeRef.current ? 1 : 0);
   const groupRef = useRef<THREE.Group>(null);
-  const counts = getHeroRingCounts(compact);
 
   const buildPoints = (): THREE.Points => {
     const origins = createPointField(count);
@@ -122,17 +129,25 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
     return helper;
   };
 
-  const buildOuterLine = (): THREE.LineLoop => createLoop(counts.lines, 0x00c9d8);
-  const buildInnerLine = (): THREE.LineLoop => createLoop(counts.lines, 0x087bff);
-  const buildOuterPoints = (): THREE.Points => createPoints(counts.outer, heroMotion.outerSize);
-  const buildInnerPoints = (): THREE.Points => createPoints(counts.inner, heroMotion.innerSize);
+  const buildShapes = (): ShapeView[] => {
+    const specs = getHeroShapes(compact);
+    const views: ShapeView[] = [];
+    for (let index = 0; index < specs.length; index += 1) {
+      const shape = specs[index];
+      if (!shape) continue;
+      views.push({
+        id: index,
+        shape,
+        line: createLoop(shape.sides, shape.color),
+        points: createPoints(shape.sides * shape.pointsPerEdge, shape.size),
+      });
+    }
+    return views;
+  };
 
   const points = useMemo(buildPoints, [count]);
   const grid = useMemo(buildGrid, []);
-  const outerLine = useMemo(buildOuterLine, [counts.lines]);
-  const innerLine = useMemo(buildInnerLine, [counts.lines]);
-  const outerPoints = useMemo(buildOuterPoints, [counts.outer]);
-  const innerPoints = useMemo(buildInnerPoints, [counts.inner]);
+  const shapes = useMemo(buildShapes, [compact]);
 
   const release = (): (() => void) => {
     const dispose = (): void => {
@@ -140,36 +155,35 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
       disposeMaterial(points.material);
       grid.geometry.dispose();
       disposeMaterial(grid.material);
-      outerLine.geometry.dispose();
-      disposeMaterial(outerLine.material);
-      innerLine.geometry.dispose();
-      disposeMaterial(innerLine.material);
-      outerPoints.geometry.dispose();
-      disposeMaterial(outerPoints.material);
-      innerPoints.geometry.dispose();
-      disposeMaterial(innerPoints.material);
+      for (const view of shapes) {
+        view.line.geometry.dispose();
+        disposeMaterial(view.line.material);
+        view.points.geometry.dispose();
+        disposeMaterial(view.points.material);
+      }
     };
     return dispose;
   };
 
-  useEffect(release, [grid, innerLine, innerPoints, outerLine, outerPoints, points]);
+  useEffect(release, [grid, points, shapes]);
 
-  const writeLoop = (loop: THREE.LineLoop, segments: number, radius: number, speed: number, scale: number, time: number): void => {
+  const writeLoop = (loop: THREE.LineLoop, shape: HeroShape, scale: number, time: number): void => {
     const attribute = readAttribute(loop.geometry, "position");
     const values = attribute ? asFloats(attribute) : null;
     if (!attribute || !values) return;
-    fillRingPositions(values, segments, radius, heroMotion.tilt, time, speed, scale);
+    fillPolygonPositions(values, shape.sides, shape.sides, shape.radius, shape.tilt, shape.depth, time, shape.speed, scale);
     attribute.needsUpdate = true;
   };
 
-  const writePoints = (mesh: THREE.Points, pointCount: number, radius: number, speed: number, scale: number, time: number): void => {
+  const writeShapePoints = (mesh: THREE.Points, shape: HeroShape, scale: number, time: number): void => {
     const position = readAttribute(mesh.geometry, "position");
     const color = readAttribute(mesh.geometry, "color");
     const positions = position ? asFloats(position) : null;
     const colors = color ? asFloats(color) : null;
     if (!position || !positions || !color || !colors) return;
-    fillRingPositions(positions, pointCount, radius, heroMotion.tilt, time, speed, scale);
-    fillRingColors(colors, pointCount, time, speed * 2.4);
+    const pointCount = shape.sides * shape.pointsPerEdge;
+    fillPolygonPositions(positions, pointCount, shape.sides, shape.radius, shape.tilt, shape.depth, time, shape.speed, scale);
+    fillShapeColors(colors, pointCount, time, shape.speed * 2.4);
     position.needsUpdate = true;
     color.needsUpdate = true;
   };
@@ -209,28 +223,28 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
       }
     }
 
-    writeLoop(outerLine, counts.lines, heroMotion.outerRadius, heroMotion.outerSpeed, scale, time);
-    writeLoop(innerLine, counts.lines, heroMotion.innerRadius, heroMotion.innerSpeed, scale, time);
-    writePoints(outerPoints, counts.outer, heroMotion.outerRadius, heroMotion.outerSpeed, scale, time);
-    writePoints(innerPoints, counts.inner, heroMotion.innerRadius, heroMotion.innerSpeed, scale, time);
-    setOpacity(outerLine.material, fade * 0.9);
-    setOpacity(innerLine.material, fade * 0.55);
-    setOpacity(outerPoints.material, fade);
-    setOpacity(innerPoints.material, fade * 0.8);
+    for (const view of shapes) {
+      writeLoop(view.line, view.shape, scale, time);
+      writeShapePoints(view.points, view.shape, scale, time);
+      setOpacity(view.line.material, fade * view.shape.lineOpacity);
+      setOpacity(view.points.material, fade);
+    }
   };
 
   useFrame(animate);
+
+  const renderShape = (view: ShapeView): ReactElement => (
+    <group key={view.id}>
+      <primitive object={view.line} />
+      <primitive object={view.points} />
+    </group>
+  );
 
   return (
     <>
       <primitive object={grid} />
       <primitive object={points} />
-      <group ref={groupRef}>
-        <primitive object={outerLine} />
-        <primitive object={outerPoints} />
-        <primitive object={innerLine} />
-        <primitive object={innerPoints} />
-      </group>
+      <group ref={groupRef}>{shapes.map(renderShape)}</group>
     </>
   );
 };
