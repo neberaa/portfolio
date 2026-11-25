@@ -14,7 +14,8 @@ body {
 .screen-track {
   height: 100%;
   transform: translate3d(0, calc(var(--screen-index) * -100dvh), 0);
-  transition: transform var(--scroll-duration) var(--ease-out);
+  transition: transform var(--scroll-duration) var(--ease-screen);
+  backface-visibility: hidden;
 }
 
 .screen-track[data-reduced="true"] {

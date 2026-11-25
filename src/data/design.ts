@@ -57,10 +57,11 @@ export const measure = {
   iconStroke: 1.75,
   iconStrokeMark: 2,
   lift: -4,
-  scrollMs: 850,
-  scrollDuration: "850ms",
+  scrollMs: 1100,
+  scrollDuration: "1100ms",
   accordionDuration: "520ms",
   easeOut: "cubic-bezier(0.22, 1, 0.36, 1)",
+  easeScreen: "cubic-bezier(0.65, 0, 0.35, 1)",
   hoverMs: 0.2,
   breakpoint: "768px",
 } as const;
@@ -165,4 +166,5 @@ export const designStyle = {
   "--scroll-duration": measure.scrollDuration,
   "--accordion-duration": measure.accordionDuration,
   "--ease-out": measure.easeOut,
+  "--ease-screen": measure.easeScreen,
 } as CSSProperties;
