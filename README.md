@@ -1,5 +1,3 @@
-<img width="1233" height="685" alt="Screenshot 2026-11-26 at 00 50 57" src="https://github.com/user-attachments/assets/661de6e0-76f4-4c46-bf87-d7deb5b5073c" />
-
 # Anton Nebera — Portfolio
 
 A personal portfolio for **Anton Nebera**, Frontend Tech Lead, Engineer and Product Builder.
@@ -12,11 +10,9 @@ The site presents selected engineering work, frontend architecture, technical le
 
 ## Preview
 
-The homepage uses a minimal dark visual system, cyan-to-blue typography, subtle generative particle geometry and full-screen navigation.
+<img width="1233" height="685" alt="Screenshot 2026-11-26 at 00 50 57" src="https://github.com/user-attachments/assets/661de6e0-76f4-4c46-bf87-d7deb5b5073c" />
 
-<!-- Add the supplied homepage screenshot at docs/images/portfolio-homepage.jpg, then embed it here:
-![Anton Nebera portfolio homepage](docs/images/portfolio-homepage.jpg)
--->
+The homepage uses a minimal dark visual system, cyan-to-blue typography, subtle generative particle geometry and full-screen navigation.
 
 ## Highlights
 
