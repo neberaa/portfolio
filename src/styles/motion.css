@@ -108,6 +108,9 @@ body {
   .icon-link svg,
   .menu-button,
   .menu-button svg,
+  .burger span,
+  .menu-panel,
+  .menu-panel .type-menu,
   .scroll-cue-button,
   .accordion-trigger {
     transition: none;

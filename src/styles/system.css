@@ -285,6 +285,49 @@ button.type-brand:focus-visible,
   color: var(--ink);
 }
 
+.burger {
+  position: relative;
+  width: var(--burger);
+  height: var(--burger);
+}
+
+.burger span {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: var(--burger-bar);
+  margin-top: calc(var(--burger-bar) / -2);
+  background: currentColor;
+  transition: transform var(--menu-duration) var(--ease-out);
+}
+
+.burger span:nth-child(1) {
+  transform: translateY(calc(var(--burger-gap) * -1)) rotate(0deg);
+}
+
+.burger span:nth-child(2) {
+  transition:
+    transform var(--menu-duration) var(--ease-out),
+    opacity var(--menu-duration) var(--ease-out);
+}
+
+.burger span:nth-child(3) {
+  transform: translateY(var(--burger-gap)) rotate(0deg);
+}
+
+.menu-button[aria-expanded="true"] .burger span:nth-child(1) {
+  transform: translateY(0) rotate(45deg);
+}
+
+.menu-button[aria-expanded="true"] .burger span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-button[aria-expanded="true"] .burger span:nth-child(3) {
+  transform: translateY(0) rotate(-45deg);
+}
+
 .menu-button:hover,
 .menu-button:focus-visible {
   color: var(--cyan);
@@ -300,6 +343,45 @@ button.type-brand:focus-visible,
   background: var(--background);
   padding-inline: var(--page-x-hero);
   padding-top: var(--menu-top);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(var(--menu-shift));
+  transition:
+    opacity var(--menu-duration) var(--ease-out),
+    transform var(--menu-duration) var(--ease-out),
+    visibility var(--menu-duration) var(--ease-out);
+}
+
+.menu-panel[data-open="true"] {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+}
+
+.menu-panel .type-menu {
+  opacity: 0;
+  transform: translateY(var(--menu-shift));
+  transition:
+    color var(--hover-duration) var(--ease-out),
+    opacity var(--menu-duration) var(--ease-out),
+    transform var(--menu-duration) var(--ease-out);
+}
+
+.menu-panel[data-open="true"] .type-menu {
+  opacity: 1;
+  transform: none;
+}
+
+.menu-panel[data-open="true"] .type-menu:nth-child(2) {
+  transition-delay: var(--menu-stagger);
+}
+
+.menu-panel[data-open="true"] .type-menu:nth-child(3) {
+  transition-delay: calc(var(--menu-stagger) * 2);
+}
+
+.menu-panel[data-open="true"] .type-menu:nth-child(4) {
+  transition-delay: calc(var(--menu-stagger) * 3);
 }
 
 .brand-row,

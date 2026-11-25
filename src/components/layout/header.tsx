@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, Menu, X } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useState, type ReactElement } from "react";
 import { layoutClass, measure, typeClass } from "@/data/design";
 import { screens } from "@/data/sections";
@@ -11,6 +11,14 @@ import { LinkedInIcon } from "@/components/ui/linkedin-icon";
 import type { Screen, ScreenId } from "@/types/section";
 
 const navItems = getNavSections(screens);
+
+const Burger = (): ReactElement => (
+  <span className="burger" aria-hidden>
+    <span />
+    <span />
+    <span />
+  </span>
+);
 
 type NavButtonProps = {
   item: Screen;
@@ -99,19 +107,20 @@ export const Header = (): ReactElement => {
           aria-label={open ? "Close menu" : "Open menu"}
           onClick={toggleMenu}
         >
-          {open ? (
-            <X size={measure.iconMd} strokeWidth={measure.iconStroke} />
-          ) : (
-            <Menu size={measure.iconMd} strokeWidth={measure.iconStroke} />
-          )}
+          <Burger />
         </button>
       </div>
 
-      {open ? (
-        <nav id="mobile-nav" aria-label="Primary" className={`${layoutClass.menuPanel} md:hidden`}>
-          {navItems.map(renderMenuItem)}
-        </nav>
-      ) : null}
+      <nav
+        id="mobile-nav"
+        aria-label="Primary"
+        aria-hidden={open ? undefined : true}
+        inert={open ? undefined : true}
+        data-open={open ? "true" : "false"}
+        className={`${layoutClass.menuPanel} md:hidden`}
+      >
+        {navItems.map(renderMenuItem)}
+      </nav>
     </header>
   );
 };
