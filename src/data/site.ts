@@ -7,7 +7,7 @@ export const site = {
   emailHref: "mailto:neberaanton@gmail.com",
   linkedIn: "https://www.linkedin.com/in/anton-nebera-9a8232185/",
   linkedInLabel: "LinkedIn",
-  cv: "/Anton_Nebera_CV_VOID_SpaceGrotesk_IBM_Plex_5491F5.pdf",
+  cv: "/neberaanton.pdf",
   cvLabel: "CV",
   location: "Derbyshire, United Kingdom",
   role: "Frontend Tech Lead",
