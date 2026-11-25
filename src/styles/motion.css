@@ -112,7 +112,8 @@ body {
   .menu-panel,
   .menu-panel .type-menu,
   .scroll-cue-button,
-  .accordion-trigger {
+  .accordion-trigger,
+  .site-header {
     transition: none;
   }
 }

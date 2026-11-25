@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { screens } from "@/data/sections";
-import { getActiveNavId, getNavSections, getScreen, getSectionIndex } from "@/helpers/sections";
+import { getActiveNavId, getNavSections, getScreen, getSectionIndex, isHeaderCompact } from "@/helpers/sections";
 import type { Screen } from "@/types/section";
 
 describe("getNavSections", () => {
@@ -29,6 +29,14 @@ describe("getSectionIndex", () => {
   it("finds a screen and falls back to the first", () => {
     expect(getSectionIndex(["home", "about"], "about")).toBe(1);
     expect(getSectionIndex(["home", "about"], "missing")).toBe(0);
+  });
+});
+
+describe("isHeaderCompact", () => {
+  it("stays open on the home screen and compacts after it", () => {
+    expect(isHeaderCompact("home")).toBe(false);
+    expect(isHeaderCompact("about")).toBe(true);
+    expect(isHeaderCompact("contact")).toBe(true);
   });
 });
 

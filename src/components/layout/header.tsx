@@ -5,7 +5,7 @@ import { useState, type ReactElement } from "react";
 import { layoutClass, measure, typeClass } from "@/data/design";
 import { screens } from "@/data/sections";
 import { site } from "@/data/site";
-import { getActiveNavId, getNavSections } from "@/helpers/sections";
+import { getActiveNavId, getNavSections, isHeaderCompact } from "@/helpers/sections";
 import { useSiteScroll } from "@/hooks/use-site-scroll";
 import { LinkedInIcon } from "@/components/ui/linkedin-icon";
 import type { Screen, ScreenId } from "@/types/section";
@@ -80,7 +80,10 @@ export const Header = (): ReactElement => {
   );
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-30 ${layoutClass.page}`}>
+    <header
+      data-compact={isHeaderCompact(activeId) ? "true" : "false"}
+      className={`site-header fixed inset-x-0 top-0 z-30 ${layoutClass.page}`}
+    >
       <div className="relative z-40 flex items-center justify-between">
         <div className={layoutClass.brandRow}>
           <button type="button" onClick={goHome} className={typeClass.brand}>

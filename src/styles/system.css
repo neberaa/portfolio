@@ -167,6 +167,21 @@ button,
   padding-block: var(--header-y);
 }
 
+.site-header {
+  border-bottom: var(--line) solid transparent;
+  background-color: transparent;
+  transition:
+    background-color var(--header-duration) var(--ease-out),
+    border-color var(--header-duration) var(--ease-out),
+    padding-block var(--header-duration) var(--ease-out);
+}
+
+.site-header[data-compact="true"] {
+  padding-block: var(--header-compact);
+  border-bottom-color: color-mix(in srgb, var(--ink) 12%, transparent);
+  background-color: var(--background);
+}
+
 .pad-section {
   display: flex;
   width: 100%;
