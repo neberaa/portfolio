@@ -8,11 +8,15 @@ The site presents selected engineering work, frontend architecture, technical le
 - **LinkedIn:** https://www.linkedin.com/in/anton-nebera-9a8232185/
 - **Contact:** neberaanton@gmail.com
 
-## Overview
+## Preview
 
-The portfolio is designed as a sequence of full-screen sections with a minimal dark visual system, cyan accents and restrained motion.
+The homepage uses a minimal dark visual system, cyan-to-blue typography, subtle generative particle geometry and full-screen navigation.
 
-### Highlights
+<!-- Add the supplied homepage screenshot at docs/images/portfolio-homepage.jpg, then embed it here:
+![Anton Nebera portfolio homepage](docs/images/portfolio-homepage.jpg)
+-->
+
+## Highlights
 
 - Responsive portfolio experience built with Next.js and React
 - Typed content separated from presentation components
@@ -60,18 +64,18 @@ src/
 ### Requirements
 
 - Node.js (use an active LTS release)
-- npm
+- Yarn
 
 ### Install dependencies
 
 ```bash
-npm install
+yarn install
 ```
 
 ### Run locally
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -80,11 +84,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Command | Description |
 | --- | --- |
-| `npm run dev` | Start the local Next.js development server |
-| `npm run build` | Create a production build |
-| `npm run start` | Start the production server |
-| `npm run lint` | Run ESLint |
-| `npm test` | Run the Vitest test suite once |
+| `yarn dev` | Start the local Next.js development server |
+| `yarn build` | Create a production build |
+| `yarn start` | Start the production server |
+| `yarn lint` | Run ESLint |
+| `yarn test` | Run the Vitest test suite once |
 
 ## Engineering notes
 
@@ -105,9 +109,9 @@ The ambient particle field is implemented with React Three Fiber and Three.js. I
 Before merging changes, run:
 
 ```bash
-npm run lint
-npm test
-npm run build
+yarn lint
+yarn test
+yarn build
 ```
 
 ## Deployment
