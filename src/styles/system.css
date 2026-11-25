@@ -36,9 +36,14 @@ button,
   display: flex;
   width: 100%;
   min-width: 0;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-brand);
   color: var(--ink);
+}
+
+.type-role .sep {
+  padding-inline: 0;
 }
 
 .type-eyebrow,
@@ -616,6 +621,16 @@ button.type-brand:focus-visible,
   .pad-page,
   .pad-section {
     padding-inline: var(--page-x-wide);
+  }
+
+  .type-role {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .type-role .sep {
+    padding-inline: var(--sep);
   }
 
   .menu-button,

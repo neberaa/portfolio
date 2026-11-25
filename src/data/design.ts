@@ -62,7 +62,7 @@ export const measure = {
   scrollMs: 1100,
   scrollDuration: "1100ms",
   heroFade: "1400ms",
-  heroFadeDelay: "200ms",
+  heroFadeDelay: "800ms",
   accordionDuration: "520ms",
   easeOut: "cubic-bezier(0.22, 1, 0.36, 1)",
   easeScreen: "cubic-bezier(0.65, 0, 0.35, 1)",
