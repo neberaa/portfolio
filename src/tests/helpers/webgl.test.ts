@@ -6,6 +6,7 @@ import {
   createPointField,
   damp,
   driftPoint,
+  followAxis,
   fillPolygonPositions,
   fillShapeColors,
   getHeroShapes,
@@ -13,6 +14,7 @@ import {
   introFade,
   introScale,
   mixHex,
+  pointerNormal,
   posePolygonPoint,
   shapeBrightness,
 } from "@/helpers/webgl";
@@ -96,6 +98,27 @@ describe("damp", () => {
   it("moves part of the way toward the target", () => {
     expect(damp(0, 1, 0.25)).toBeCloseTo(0.25);
     expect(damp(0, 1, 2)).toBe(1);
+  });
+});
+
+describe("pointerNormal", () => {
+  it("maps the edges and the center of the screen", () => {
+    expect(pointerNormal(0, 200)).toBe(-1);
+    expect(pointerNormal(100, 200)).toBe(0);
+    expect(pointerNormal(200, 200)).toBe(1);
+  });
+
+  it("clamps a pointer that leaves the screen", () => {
+    expect(pointerNormal(-40, 200)).toBe(-1);
+    expect(pointerNormal(320, 200)).toBe(1);
+    expect(pointerNormal(10, 0)).toBe(0);
+  });
+});
+
+describe("followAxis", () => {
+  it("eases toward the pointer and stops at the reach", () => {
+    expect(followAxis(0, 1, 2, 0.5)).toBeCloseTo(1);
+    expect(followAxis(0, -1, 2, 1)).toBe(-2);
   });
 });
 

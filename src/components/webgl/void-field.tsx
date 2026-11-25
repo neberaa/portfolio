@@ -13,11 +13,13 @@ import {
   driftPoint,
   fillPolygonPositions,
   fillShapeColors,
+  followAxis,
   getHeroShapes,
   getPointCount,
   heroMotion,
   introFade,
   introScale,
+  pointerNormal,
   type HeroShape,
   type Point,
 } from "@/helpers/webgl";
@@ -92,6 +94,9 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
   homeRef.current = activeId === "home";
   const presenceRef = useRef(homeRef.current ? 1 : 0);
   const groupRef = useRef<THREE.Group>(null);
+  const aimRef = useRef({ x: 0, y: 0 });
+  const followRef = useRef({ x: 0, y: 0 });
+  const fineRef = useRef(false);
 
   const buildPoints = (): THREE.Points => {
     const origins = createPointField(count);
@@ -167,6 +172,22 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
 
   useEffect(release, [grid, points, shapes]);
 
+  const watchPointer = (): (() => void) => {
+    const onPointerMove = (event: PointerEvent): void => {
+      aimRef.current.x = pointerNormal(event.clientX, window.innerWidth);
+      aimRef.current.y = -pointerNormal(event.clientY, window.innerHeight);
+    };
+    const stop = (): void => {
+      window.removeEventListener("pointermove", onPointerMove);
+    };
+    fineRef.current = window.matchMedia("(pointer: fine)").matches;
+    if (!fineRef.current) return stop;
+    window.addEventListener("pointermove", onPointerMove);
+    return stop;
+  };
+
+  useEffect(watchPointer, []);
+
   const writeLoop = (loop: THREE.LineLoop, shape: HeroShape, scale: number, time: number): void => {
     const attribute = readAttribute(loop.geometry, "position");
     const values = attribute ? asFloats(attribute) : null;
@@ -188,13 +209,17 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
     color.needsUpdate = true;
   };
 
-  const animate = ({ clock, pointer }: RootState): void => {
+  const animate = ({ clock }: RootState): void => {
     if (document.hidden) return;
     const time = clock.elapsedTime;
     const target = homeRef.current ? 1 : 0;
     presenceRef.current = damp(presenceRef.current, target, heroMotion.presenceStep);
     const scale = introScale(time, heroMotion.introSeconds);
     const fade = introFade(time, heroMotion.introSeconds) * presenceRef.current;
+    if (fineRef.current) {
+      followRef.current.x = followAxis(followRef.current.x, aimRef.current.x, heroMotion.followX, heroMotion.followStep);
+      followRef.current.y = followAxis(followRef.current.y, aimRef.current.y, heroMotion.followY, heroMotion.followStep);
+    }
 
     const origins = points.userData.origins as Point[];
     const attribute = readAttribute(points.geometry, "position");
@@ -208,18 +233,18 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
       attribute.needsUpdate = true;
     }
 
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-    if (finePointer) {
-      points.rotation.y = pointer.x * 0.12;
-      points.rotation.x = pointer.y * 0.05;
+    if (fineRef.current) {
+      points.rotation.y = aimRef.current.x * 0.12;
+      points.rotation.x = -aimRef.current.y * 0.05;
     }
 
     const group = groupRef.current;
     if (group) {
-      group.position.y = Math.sin(time * 0.35) * 0.18;
-      if (finePointer) {
-        group.rotation.y = pointer.x * 0.2;
-        group.rotation.x = pointer.y * 0.08;
+      group.position.x = followRef.current.x;
+      group.position.y = Math.sin(time * 0.35) * 0.18 + followRef.current.y;
+      if (fineRef.current) {
+        group.rotation.y = aimRef.current.x * 0.22;
+        group.rotation.x = -aimRef.current.y * 0.1;
       }
     }
 

@@ -46,6 +46,9 @@ export const buildPointColors = (points: readonly Point[]): number[] =>
 export const heroMotion = {
   introSeconds: 2.8,
   presenceStep: 0.06,
+  followStep: 0.08,
+  followX: 2.4,
+  followY: 1.35,
 } as const;
 
 export type HeroShape = {
@@ -104,6 +107,15 @@ export const introFade = (time: number, duration: number): number => {
 
 export const damp = (current: number, target: number, amount: number): number =>
   current + (target - current) * Math.min(1, Math.max(0, amount));
+
+export const pointerNormal = (client: number, size: number): number => {
+  if (size <= 0) return 0;
+  const value = (client / size) * 2 - 1;
+  return Math.min(1, Math.max(-1, value));
+};
+
+export const followAxis = (current: number, pointer: number, reach: number, step: number): number =>
+  damp(current, pointer * reach, step);
 
 export const posePolygonPoint = (
   index: number,
