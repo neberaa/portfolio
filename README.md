@@ -1,10 +1,12 @@
+<img width="1233" height="685" alt="Screenshot 2026-11-26 at 00 50 57" src="https://github.com/user-attachments/assets/661de6e0-76f4-4c46-bf87-d7deb5b5073c" />
+
 # Anton Nebera — Portfolio
 
 A personal portfolio for **Anton Nebera**, Frontend Tech Lead, Engineer and Product Builder.
 
 The site presents selected engineering work, frontend architecture, technical leadership and the approach behind building maintainable product experiences.
 
-- **Portfolio:** https://neberaanton.me
+- **Portfolio:** https://neberaanton.vercel.app
 - **LinkedIn:** https://www.linkedin.com/in/anton-nebera-9a8232185/
 - **Contact:** neberaanton@gmail.com
 
