@@ -19,7 +19,7 @@ export const ExploreRail = (): ReactElement => {
     <div className={`${layoutClass.rail} pointer-events-none hidden lg:block`}>
       <div className="flex items-center gap-4">
         <p className={`explore-label ${typeClass.explore}`}>Explore</p>
-        <div className="flex flex-col items-center gap-3">
+        <div className="explore-meter">
           <div
             className={layoutClass.track}
             role="progressbar"
@@ -28,9 +28,9 @@ export const ExploreRail = (): ReactElement => {
             aria-valuenow={percent}
             aria-label="Page progress"
           >
-            <span className="absolute inset-x-0 top-0 bg-cyan" style={fillStyle} />
+            <span className="explore-fill" style={fillStyle} />
           </div>
-          <p className={typeClass.percent}>{percent}%</p>
+          <p className={`${typeClass.percent} explore-percent`}>{percent}%</p>
         </div>
       </div>
     </div>

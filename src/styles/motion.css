@@ -1,10 +1,36 @@
 html,
 body {
+  height: 100%;
+  overflow: hidden;
   background: var(--background);
 }
 
-.fp-watermark a {
-  color: #64748b !important;
+.screen-viewport {
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.screen-track {
+  height: 100%;
+  transform: translate3d(0, calc(var(--screen-index) * -100dvh), 0);
+  transition: transform var(--scroll-duration) var(--ease-screen);
+  backface-visibility: hidden;
+}
+
+.screen-track[data-reduced="true"] {
+  transition: none;
+}
+
+.screen-panel {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.section-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .surname {
@@ -66,5 +92,24 @@ body {
   .scroll-cue,
   .rise-in {
     animation: none;
+  }
+
+  .accordion-chevron,
+  .accordion-panel,
+  .accordion-body,
+  .nav-link,
+  .nav-underline,
+  .type-brand,
+  .type-menu,
+  .type-link,
+  .link-row,
+  .link-row svg,
+  .icon-link,
+  .icon-link svg,
+  .menu-button,
+  .menu-button svg,
+  .scroll-cue-button,
+  .accordion-trigger {
+    transition: none;
   }
 }
