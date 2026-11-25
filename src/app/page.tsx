@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 import { ExploreRail } from "@/components/layout/explore-rail";
-import { Fullpage } from "@/components/layout/site-scroll";
+import { ScreenDeck } from "@/components/layout/site-scroll";
 import { Header } from "@/components/layout/header";
 import { About } from "@/components/sections/about";
 import { Contact } from "@/components/sections/contact";
@@ -15,7 +15,7 @@ const HomePage = (): ReactElement => (
     <Header />
     <ExploreRail />
     <main>
-      <Fullpage>
+      <ScreenDeck>
         <Hero />
         <About />
         <Skills />
@@ -23,7 +23,7 @@ const HomePage = (): ReactElement => (
         <ProjectScreen project={pipelinerProject} />
         <Leadership />
         <Contact />
-      </Fullpage>
+      </ScreenDeck>
     </main>
   </>
 );

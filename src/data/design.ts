@@ -57,6 +57,7 @@ export const measure = {
   iconStrokeMark: 2,
   lift: -4,
   scrollMs: 850,
+  scrollDuration: "850ms",
   hoverMs: 0.2,
   breakpoint: "768px",
 } as const;
@@ -157,4 +158,5 @@ export const designStyle = {
   "--prose": measure.prose,
   "--title-width": measure.titleWidth,
   "--heading-width": measure.headingWidth,
+  "--scroll-duration": measure.scrollDuration,
 } as CSSProperties;

@@ -1,10 +1,35 @@
 html,
 body {
+  height: 100%;
+  overflow: hidden;
   background: var(--background);
 }
 
-.fp-watermark a {
-  color: #64748b !important;
+.screen-viewport {
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.screen-track {
+  height: 100%;
+  transform: translate3d(0, calc(var(--screen-index) * -100dvh), 0);
+  transition: transform var(--scroll-duration) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.screen-track[data-reduced="true"] {
+  transition: none;
+}
+
+.screen-panel {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.section-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .surname {

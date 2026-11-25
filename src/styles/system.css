@@ -284,10 +284,6 @@
   gap: var(--gap-block);
 }
 
-.fp-overflow {
-  height: 100%;
-}
-
 @media (min-width: 768px) {
   .pad-page,
   .pad-section {
