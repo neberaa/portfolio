@@ -89,6 +89,11 @@ Open [http://localhost:3000](http://localhost:3000).
 | `yarn test` | Run the Vitest test suite once |
 | `yarn typecheck` | Run the TypeScript compiler without emitting files |
 
+## Engineering documentation
+
+- [Architecture overview](docs/architecture.md) — application composition, section navigation, WebGL scene, motion, accessibility and testing approach.
+- [Website modernisation case study](docs/case-studies/website-modernisation.md) — technical ownership of the four-month, 1,000+ page migration.
+
 ## Featured case study
 
 [Large-scale website modernisation](docs/case-studies/website-modernisation.md) — technical ownership of a four-month migration of 1,000+ pages from Vue.js and Prismic to Next.js and Hygraph, delivered with a five-person team alongside a rebrand and redesigned design system.
