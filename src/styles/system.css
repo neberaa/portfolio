@@ -38,7 +38,7 @@ button,
   min-width: 0;
   flex-direction: column;
   align-items: center;
-  gap: var(--gap-brand);
+  gap: var(--role-stack);
   color: var(--ink);
 }
 
