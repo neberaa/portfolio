@@ -33,6 +33,11 @@ button,
 }
 
 .type-role {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: center;
   color: var(--ink);
 }
 
@@ -160,6 +165,10 @@ button,
 .sep {
   padding-inline: var(--sep);
   color: var(--quiet);
+}
+
+.role-part {
+  white-space: nowrap;
 }
 
 .pad-page {

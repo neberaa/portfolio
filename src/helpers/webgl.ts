@@ -44,7 +44,7 @@ export const buildPointColors = (points: readonly Point[]): number[] =>
   });
 
 export const heroMotion = {
-  introSeconds: 0.55,
+  introSeconds: 0,
   presenceStep: 0.06,
   exitStep: 0.18,
   travelStep: 0.045,

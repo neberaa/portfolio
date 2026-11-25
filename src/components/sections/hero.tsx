@@ -15,17 +15,17 @@ export const Hero = (): ReactElement => {
     <section id="home-panel" aria-label="Home" className="section screen-panel relative">
       <div className="section-scroll">
       <div className="hero-veil pointer-events-none absolute inset-0" />
-      <div className={`rise-in ${layoutClass.heroCopy}`}>
+      <div className={layoutClass.heroCopy}>
         <h1 className={typeClass.display}>
           <span className="block text-ink">ANTON</span>
           <span className="surname block">NEBERA</span>
         </h1>
         <p className={`mt-8 ${typeClass.role}`}>
-          Frontend Tech Lead
+          <span className="role-part">Frontend Tech Lead</span>
           <span className="sep">·</span>
-          Engineer
+          <span className="role-part">AI Engineer</span>
           <span className="sep">·</span>
-          Product Builder
+          <span className="role-part">Product Builder</span>
         </p>
       </div>
       </div>
