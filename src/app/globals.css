@@ -1,26 +1,39 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "../styles/tokens.css";
+@import "../styles/system.css";
+@import "../styles/motion.css";
 
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-graphite: var(--graphite);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-quiet: var(--quiet);
+  --color-cyan: var(--cyan);
+  --color-blue: var(--blue);
+  --font-sans: var(--font-body-face), "IBM Plex Sans", sans-serif;
+  --font-display: var(--font-display-face), "Space Grotesk", sans-serif;
+  --font-mono: var(--font-code-face), "IBM Plex Mono", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--background);
+  color: var(--ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--cyan) 35%, transparent);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: var(--line) solid var(--cyan);
+  outline-offset: var(--outline-offset);
 }
