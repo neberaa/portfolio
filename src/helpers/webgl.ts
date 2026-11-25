@@ -42,3 +42,163 @@ export const buildPointColors = (points: readonly Point[]): number[] =>
     const color = mixHex(0x00c9d8, 0x087bff, (x + 12) / 24);
     return [((color >> 16) & 255) / 255, ((color >> 8) & 255) / 255, (color & 255) / 255];
   });
+
+export const heroMotion = {
+  introSeconds: 0,
+  presenceStep: 0.06,
+  exitStep: 0.18,
+  travelStep: 0.045,
+  followStep: 0.08,
+  followX: 5.2,
+  followY: 3,
+} as const;
+
+export type HeroShape = {
+  readonly sides: number;
+  readonly radius: number;
+  readonly speed: number;
+  readonly tilt: number;
+  readonly pointsPerEdge: number;
+  readonly depth: number;
+  readonly color: number;
+  readonly size: number;
+  readonly lineOpacity: number;
+};
+
+export const makePolygon = (
+  sides: number,
+  radius: number,
+  speed: number,
+  tilt: number,
+  pointsPerEdge: number,
+  depth: number,
+  color: number,
+  size: number,
+  lineOpacity: number,
+): HeroShape => ({ sides, radius, speed, tilt, pointsPerEdge, depth, color, size, lineOpacity });
+
+export const heroShapes: readonly HeroShape[] = [
+  makePolygon(6, 5.1, 0.16, 0.58, 6, 1.5, 0x00c9d8, 0.08, 0.95),
+  makePolygon(3, 3.5, -0.3, 1.12, 8, 2.2, 0x087bff, 0.06, 0.75),
+  makePolygon(4, 4.3, 0.24, 0.22, 5, 1.9, 0x00c9d8, 0.055, 0.6),
+];
+
+export const smallHeroShapes: readonly HeroShape[] = [
+  makePolygon(6, 4.4, 0.16, 0.58, 4, 1.5, 0x00c9d8, 0.08, 0.95),
+  makePolygon(3, 3.1, -0.3, 1.12, 5, 2.2, 0x087bff, 0.06, 0.75),
+  makePolygon(4, 3.7, 0.24, 0.22, 4, 1.9, 0x00c9d8, 0.055, 0.6),
+];
+
+export const getHeroShapes = (isSmallScreen: boolean): readonly HeroShape[] =>
+  isSmallScreen ? smallHeroShapes : heroShapes;
+
+export const smoothStep = (amount: number): number => {
+  const t = Math.min(1, Math.max(0, amount));
+  return t * t * (3 - 2 * t);
+};
+
+export const introScale = (time: number, duration: number): number => {
+  if (duration <= 0) return 1;
+  return 0.72 + smoothStep(time / duration) * 0.28;
+};
+
+export const introFade = (time: number, duration: number): number => {
+  if (duration <= 0) return 1;
+  return smoothStep(time / duration);
+};
+
+export const damp = (current: number, target: number, amount: number): number =>
+  current + (target - current) * Math.min(1, Math.max(0, amount));
+
+export const pointerNormal = (client: number, size: number): number => {
+  if (size <= 0) return 0;
+  const value = (client / size) * 2 - 1;
+  return Math.min(1, Math.max(-1, value));
+};
+
+export const followAxis = (current: number, pointer: number, reach: number, step: number): number =>
+  damp(current, pointer * reach, step);
+
+export const delayedFade = (elapsed: number, delay: number, duration: number): number => {
+  if (elapsed <= delay) return 0;
+  return introFade(elapsed - delay, duration);
+};
+
+export const parallaxOffset = (travel: number, index: number, amount: number): number => (travel - index) * amount;
+
+export const scrollRatio = (scrollTop: number, clientHeight: number, scrollHeight: number): number => {
+  const range = scrollHeight - clientHeight;
+  if (range <= 0) return 0;
+  return Math.min(1, Math.max(0, scrollTop / range));
+};
+
+export const posePolygonPoint = (
+  index: number,
+  count: number,
+  sides: number,
+  radius: number,
+  tilt: number,
+  depth: number,
+  time: number,
+  speed: number,
+  scale: number,
+): Point => {
+  const safeCount = Math.max(1, count);
+  const safeSides = Math.max(3, Math.floor(sides));
+  const progress = (index / safeCount) * safeSides;
+  const edge = Math.floor(progress) % safeSides;
+  const along = progress - Math.floor(progress);
+  const corner = (vertex: number): readonly [number, number] => {
+    const angle = ((vertex % safeSides) / safeSides) * Math.PI * 2 + time * speed;
+    return [Math.cos(angle) * radius * scale, Math.sin(angle) * radius * scale];
+  };
+  const start = corner(edge);
+  const end = corner(edge + 1);
+  const x = start[0] + (end[0] - start[0]) * along;
+  const flatY = start[1] + (end[1] - start[1]) * along;
+  return [x, flatY * Math.sin(tilt), flatY * Math.cos(tilt) * 0.42 - depth];
+};
+
+export const shapeBrightness = (index: number, count: number, time: number, speed: number): number => {
+  const safeCount = Math.max(1, count);
+  const phase = (index / safeCount) * Math.PI * 2 + time * speed;
+  const wave = Math.cos(phase);
+  const highlight = wave > 0 ? wave ** 6 : 0;
+  return 0.22 + highlight * 0.78;
+};
+
+export const colorChannels = (color: number): readonly [number, number, number] => [
+  ((color >> 16) & 255) / 255,
+  ((color >> 8) & 255) / 255,
+  (color & 255) / 255,
+];
+
+export const fillPolygonPositions = (
+  target: Float32Array,
+  count: number,
+  sides: number,
+  radius: number,
+  tilt: number,
+  depth: number,
+  time: number,
+  speed: number,
+  scale: number,
+): void => {
+  for (let index = 0; index < count; index += 1) {
+    const [x, y, z] = posePolygonPoint(index, count, sides, radius, tilt, depth, time, speed, scale);
+    const offset = index * 3;
+    target[offset] = x;
+    target[offset + 1] = y;
+    target[offset + 2] = z;
+  }
+};
+
+export const fillShapeColors = (target: Float32Array, count: number, time: number, speed: number): void => {
+  for (let index = 0; index < count; index += 1) {
+    const [red, green, blue] = colorChannels(mixHex(0x087bff, 0x00c9d8, shapeBrightness(index, count, time, speed)));
+    const offset = index * 3;
+    target[offset] = red;
+    target[offset + 1] = green;
+    target[offset + 2] = blue;
+  }
+};

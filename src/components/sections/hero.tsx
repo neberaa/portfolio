@@ -14,18 +14,18 @@ export const Hero = (): ReactElement => {
   return (
     <section id="home-panel" aria-label="Home" className="section screen-panel relative">
       <div className="section-scroll">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,#08090B_0%,rgba(8,9,11,0.9)_46%,rgba(8,9,11,0.35)_100%)]" />
-      <div className={`rise-in ${layoutClass.heroCopy}`}>
+      <div className="hero-veil pointer-events-none absolute inset-0" />
+      <div className={layoutClass.heroCopy}>
         <h1 className={typeClass.display}>
           <span className="block text-ink">ANTON</span>
           <span className="surname block">NEBERA</span>
         </h1>
         <p className={`mt-8 ${typeClass.role}`}>
-          Frontend Tech Lead
+          <span className="role-part">Frontend Tech Lead</span>
           <span className="sep">·</span>
-          Engineer
+          <span className="role-part">AI Engineer</span>
           <span className="sep">·</span>
-          Product Builder
+          <span className="role-part">Product Builder</span>
         </p>
       </div>
       </div>

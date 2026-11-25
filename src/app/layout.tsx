@@ -5,7 +5,8 @@ import { personJsonLd, site } from "@/data/site";
 import { plexMono, plexSans, spaceGrotesk } from "@/fonts";
 import { getSiteUrl } from "@/helpers/site-url";
 import { SiteScroll } from "@/components/layout/site-scroll";
-import { VoidBackground } from "@/components/webgl/void-background";
+import { CursorRing } from "@/components/ui/cursor-ring";
+import { SceneBackground } from "@/components/webgl/scene-background";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,6 +19,12 @@ export const metadata: Metadata = {
     description: site.description,
     type: "website",
     locale: "en_GB",
+    siteName: site.name,
+  },
+  twitter: {
+    card: "summary",
+    title: site.title,
+    description: site.description,
   },
 };
 
@@ -38,9 +45,10 @@ const RootLayout = ({ children }: RootLayoutProps): ReactElement => (
     <body>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       <SiteScroll>
-        <VoidBackground />
+        <SceneBackground />
         {children}
       </SiteScroll>
+      <CursorRing />
     </body>
   </html>
 );

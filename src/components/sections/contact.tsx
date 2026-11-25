@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { FileText, Mail } from "lucide-react";
 import type { ReactElement } from "react";
 import { layoutClass, measure, typeClass } from "@/data/design";
 import { screens } from "@/data/sections";
@@ -25,6 +25,10 @@ export const Contact = (): ReactElement => (
           <a href={site.linkedIn} target="_blank" rel="noreferrer" className={layoutClass.linkRow}>
             <LinkedInIcon />
             {site.linkedInLabel}
+          </a>
+          <a href={site.cv} download className={layoutClass.linkRow}>
+            <FileText size={measure.iconSm} strokeWidth={measure.iconStroke} aria-hidden />
+            {site.cvLabel}
           </a>
         </div>
       </div>

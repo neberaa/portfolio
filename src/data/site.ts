@@ -7,6 +7,8 @@ export const site = {
   emailHref: "mailto:neberaanton@gmail.com",
   linkedIn: "https://www.linkedin.com/in/anton-nebera-9a8232185/",
   linkedInLabel: "LinkedIn",
+  cv: "/neberaanton.pdf",
+  cvLabel: "CV",
   location: "Derbyshire, United Kingdom",
   role: "Frontend Tech Lead",
 } as const;

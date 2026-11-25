@@ -26,6 +26,8 @@ export const getSectionIndex = (ids: readonly string[], id: string): number => {
   return index < 0 ? 0 : index;
 };
 
+export const isHeaderCompact = (sectionId: string): boolean => sectionId !== "home";
+
 export const getActiveNavId = (sectionId: string): ScreenId | null => {
   if (!(sectionId in navByScreen)) return null;
   return navByScreen[sectionId as ScreenId];
