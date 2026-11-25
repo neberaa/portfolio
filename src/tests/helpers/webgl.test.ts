@@ -5,6 +5,7 @@ import {
   colorChannels,
   createPointField,
   damp,
+  delayedFade,
   driftPoint,
   followAxis,
   fillPolygonPositions,
@@ -14,8 +15,10 @@ import {
   introFade,
   introScale,
   mixHex,
+  parallaxOffset,
   pointerNormal,
   posePolygonPoint,
+  scrollRatio,
   shapeBrightness,
 } from "@/helpers/webgl";
 
@@ -119,6 +122,34 @@ describe("followAxis", () => {
   it("eases toward the pointer and stops at the reach", () => {
     expect(followAxis(0, 1, 2, 0.5)).toBeCloseTo(1);
     expect(followAxis(0, -1, 2, 1)).toBe(-2);
+  });
+});
+
+describe("delayedFade", () => {
+  it("stays hidden through the delay, then opens", () => {
+    expect(delayedFade(0.2, 0.5, 0.4)).toBe(0);
+    expect(delayedFade(0.5, 0.5, 0.4)).toBe(0);
+    expect(delayedFade(0.7, 0.5, 0.4)).toBeGreaterThan(0);
+    expect(delayedFade(0.7, 0.5, 0.4)).toBeLessThan(1);
+    expect(delayedFade(0.9, 0.5, 0.4)).toBe(1);
+  });
+});
+
+describe("parallaxOffset", () => {
+  it("shifts while travel has not reached the screen", () => {
+    expect(parallaxOffset(1, 2, 3)).toBe(-3);
+    expect(parallaxOffset(2, 2, 3)).toBe(0);
+  });
+});
+
+describe("scrollRatio", () => {
+  it("is zero when the panel does not overflow", () => {
+    expect(scrollRatio(40, 800, 800)).toBe(0);
+  });
+
+  it("tracks progress through the overflow", () => {
+    expect(scrollRatio(100, 800, 1000)).toBeCloseTo(0.5);
+    expect(scrollRatio(-20, 800, 1000)).toBe(0);
   });
 });
 

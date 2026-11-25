@@ -14,15 +14,18 @@ import {
   fillPolygonPositions,
   fillShapeColors,
   followAxis,
-  getHeroShapes,
+  delayedFade,
   getPointCount,
   heroMotion,
   introFade,
   introScale,
+  parallaxOffset,
   pointerNormal,
+  scrollRatio,
   type HeroShape,
   type Point,
 } from "@/helpers/webgl";
+import { getScreenScenes, type ScreenScene } from "@/helpers/scenes";
 import { useSiteScroll } from "@/hooks/use-site-scroll";
 
 const readAttribute = (geometry: THREE.BufferGeometry, name: string): THREE.BufferAttribute | null => {
@@ -77,10 +80,16 @@ const setOpacity = (material: THREE.Material | THREE.Material[], opacity: number
 };
 
 type ShapeView = {
-  id: number;
+  id: string;
   shape: HeroShape;
   line: THREE.LineLoop;
   points: THREE.Points;
+};
+
+type SceneView = {
+  scene: ScreenScene;
+  group: THREE.Group;
+  shapes: ShapeView[];
 };
 
 type FieldProps = {
@@ -90,10 +99,12 @@ type FieldProps = {
 
 const Field = ({ count, compact }: FieldProps): ReactElement => {
   const { activeId } = useSiteScroll();
-  const homeRef = useRef(activeId === "home");
-  homeRef.current = activeId === "home";
-  const presenceRef = useRef(homeRef.current ? 1 : 0);
-  const groupRef = useRef<THREE.Group>(null);
+  const activeRef = useRef(activeId);
+  activeRef.current = activeId;
+  const shownRef = useRef("");
+  const arrivedRef = useRef(0);
+  const travelRef = useRef(0);
+  const fadeRef = useRef<number[]>([]);
   const aimRef = useRef({ x: 0, y: 0 });
   const followRef = useRef({ x: 0, y: 0 });
   const fineRef = useRef(false);
@@ -134,25 +145,29 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
     return helper;
   };
 
-  const buildShapes = (): ShapeView[] => {
-    const specs = getHeroShapes(compact);
-    const views: ShapeView[] = [];
-    for (let index = 0; index < specs.length; index += 1) {
-      const shape = specs[index];
-      if (!shape) continue;
-      views.push({
-        id: index,
-        shape,
-        line: createLoop(shape.sides, shape.color),
-        points: createPoints(shape.sides * shape.pointsPerEdge, shape.size),
-      });
+  const buildScenes = (): SceneView[] => {
+    const specs = getScreenScenes(compact);
+    const views: SceneView[] = [];
+    for (const scene of specs) {
+      const group = new THREE.Group();
+      const shapes: ShapeView[] = [];
+      for (let index = 0; index < scene.shapes.length; index += 1) {
+        const shape = scene.shapes[index];
+        if (!shape) continue;
+        const line = createLoop(shape.sides, shape.color);
+        const points = createPoints(shape.sides * shape.pointsPerEdge, shape.size);
+        group.add(line);
+        group.add(points);
+        shapes.push({ id: `${scene.id}-${index}`, shape, line, points });
+      }
+      views.push({ scene, group, shapes });
     }
     return views;
   };
 
   const points = useMemo(buildPoints, [count]);
   const grid = useMemo(buildGrid, []);
-  const shapes = useMemo(buildShapes, [compact]);
+  const scenes = useMemo(buildScenes, [compact]);
 
   const release = (): (() => void) => {
     const dispose = (): void => {
@@ -160,17 +175,20 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
       disposeMaterial(points.material);
       grid.geometry.dispose();
       disposeMaterial(grid.material);
-      for (const view of shapes) {
-        view.line.geometry.dispose();
-        disposeMaterial(view.line.material);
-        view.points.geometry.dispose();
-        disposeMaterial(view.points.material);
+      for (const view of scenes) {
+        for (const shape of view.shapes) {
+          shape.line.geometry.dispose();
+          disposeMaterial(shape.line.material);
+          shape.points.geometry.dispose();
+          disposeMaterial(shape.points.material);
+        }
+        view.group.clear();
       }
     };
     return dispose;
   };
 
-  useEffect(release, [grid, points, shapes]);
+  useEffect(release, [grid, points, scenes]);
 
   const watchPointer = (): (() => void) => {
     const onPointerMove = (event: PointerEvent): void => {
@@ -209,17 +227,31 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
     color.needsUpdate = true;
   };
 
+  const readPanelScroll = (screenId: string): number => {
+    const panel = document.getElementById(`${screenId}-panel`);
+    const scroller = panel?.querySelector(".section-scroll");
+    if (!(scroller instanceof HTMLElement)) return 0;
+    return scrollRatio(scroller.scrollTop, scroller.clientHeight, scroller.scrollHeight);
+  };
+
   const animate = ({ clock }: RootState): void => {
     if (document.hidden) return;
     const time = clock.elapsedTime;
-    const target = homeRef.current ? 1 : 0;
-    presenceRef.current = damp(presenceRef.current, target, heroMotion.presenceStep);
-    const scale = introScale(time, heroMotion.introSeconds);
-    const fade = introFade(time, heroMotion.introSeconds) * presenceRef.current;
+    const screenId = activeRef.current;
+    if (screenId !== shownRef.current) {
+      shownRef.current = screenId;
+      arrivedRef.current = time;
+    }
+    let sceneIndex = 0;
+    for (let index = 0; index < scenes.length; index += 1) {
+      if (scenes[index]?.scene.id === screenId) sceneIndex = index;
+    }
+    travelRef.current = damp(travelRef.current, sceneIndex, heroMotion.travelStep);
     if (fineRef.current) {
       followRef.current.x = followAxis(followRef.current.x, aimRef.current.x, heroMotion.followX, heroMotion.followStep);
       followRef.current.y = followAxis(followRef.current.y, aimRef.current.y, heroMotion.followY, heroMotion.followStep);
     }
+    const panelScroll = readPanelScroll(screenId);
 
     const origins = points.userData.origins as Point[];
     const attribute = readAttribute(points.geometry, "position");
@@ -238,38 +270,57 @@ const Field = ({ count, compact }: FieldProps): ReactElement => {
       points.rotation.x = -aimRef.current.y * 0.05;
     }
 
-    const group = groupRef.current;
-    if (group) {
-      group.position.x = followRef.current.x;
-      group.position.y = Math.sin(time * 0.35) * 0.18 + followRef.current.y;
-      if (fineRef.current) {
-        group.rotation.y = aimRef.current.x * 0.22;
-        group.rotation.x = -aimRef.current.y * 0.1;
-      }
+    if (fadeRef.current.length !== scenes.length) {
+      const next: number[] = [];
+      for (let index = 0; index < scenes.length; index += 1) next.push(0);
+      fadeRef.current = next;
     }
 
-    for (const view of shapes) {
-      writeLoop(view.line, view.shape, scale, time);
-      writeShapePoints(view.points, view.shape, scale, time);
-      setOpacity(view.line.material, fade * view.shape.lineOpacity);
-      setOpacity(view.points.material, fade);
+    const waited = time - arrivedRef.current;
+    for (let index = 0; index < scenes.length; index += 1) {
+      const view = scenes[index];
+      if (!view) continue;
+      const active = view.scene.id === screenId;
+      const reveal = !active
+        ? 0
+        : view.scene.id === "home"
+          ? introFade(time, heroMotion.introSeconds)
+          : delayedFade(waited, view.scene.delay, view.scene.fade);
+      const current = fadeRef.current[index] ?? 0;
+      const shown = damp(current, reveal, active ? 1 : heroMotion.exitStep);
+      fadeRef.current[index] = shown;
+      const grow = view.scene.id === "home" ? introScale(time, heroMotion.introSeconds) : 0.84 + shown * 0.16;
+      const follow = active ? view.scene.follow : 0;
+      view.group.position.x =
+        view.scene.x + parallaxOffset(travelRef.current, view.scene.index, view.scene.parallaxX) + followRef.current.x * follow;
+      view.group.position.y =
+        view.scene.y +
+        parallaxOffset(travelRef.current, view.scene.index, view.scene.parallaxY) +
+        (active ? panelScroll * view.scene.scrollLift : 0) +
+        Math.sin(time * 0.35 + view.scene.index) * view.scene.bob +
+        followRef.current.y * follow;
+      view.group.scale.setScalar(view.scene.scale * grow);
+      view.group.rotation.z = view.scene.roll + time * view.scene.spin;
+      view.group.rotation.y = fineRef.current ? aimRef.current.x * 0.22 * follow : 0;
+      view.group.rotation.x = fineRef.current ? -aimRef.current.y * 0.1 * follow : 0;
+      for (const shape of view.shapes) {
+        writeLoop(shape.line, shape.shape, 1, time);
+        writeShapePoints(shape.points, shape.shape, 1, time);
+        setOpacity(shape.line.material, shown * shape.shape.lineOpacity);
+        setOpacity(shape.points.material, shown);
+      }
     }
   };
 
   useFrame(animate);
 
-  const renderShape = (view: ShapeView): ReactElement => (
-    <group key={view.id}>
-      <primitive object={view.line} />
-      <primitive object={view.points} />
-    </group>
-  );
+  const renderScene = (view: SceneView): ReactElement => <primitive key={view.scene.id} object={view.group} />;
 
   return (
     <>
       <primitive object={grid} />
       <primitive object={points} />
-      <group ref={groupRef}>{shapes.map(renderShape)}</group>
+      {scenes.map(renderScene)}
     </>
   );
 };

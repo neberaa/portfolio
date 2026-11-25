@@ -46,6 +46,8 @@ export const buildPointColors = (points: readonly Point[]): number[] =>
 export const heroMotion = {
   introSeconds: 2.8,
   presenceStep: 0.06,
+  exitStep: 0.18,
+  travelStep: 0.045,
   followStep: 0.08,
   followX: 5.2,
   followY: 3,
@@ -63,7 +65,7 @@ export type HeroShape = {
   readonly lineOpacity: number;
 };
 
-const heroShape = (
+export const makePolygon = (
   sides: number,
   radius: number,
   speed: number,
@@ -76,15 +78,15 @@ const heroShape = (
 ): HeroShape => ({ sides, radius, speed, tilt, pointsPerEdge, depth, color, size, lineOpacity });
 
 export const heroShapes: readonly HeroShape[] = [
-  heroShape(6, 5.1, 0.16, 0.58, 6, 1.5, 0x00c9d8, 0.08, 0.95),
-  heroShape(3, 3.5, -0.3, 1.12, 8, 2.2, 0x087bff, 0.06, 0.75),
-  heroShape(4, 4.3, 0.24, 0.22, 5, 1.9, 0x00c9d8, 0.055, 0.6),
+  makePolygon(6, 5.1, 0.16, 0.58, 6, 1.5, 0x00c9d8, 0.08, 0.95),
+  makePolygon(3, 3.5, -0.3, 1.12, 8, 2.2, 0x087bff, 0.06, 0.75),
+  makePolygon(4, 4.3, 0.24, 0.22, 5, 1.9, 0x00c9d8, 0.055, 0.6),
 ];
 
 export const smallHeroShapes: readonly HeroShape[] = [
-  heroShape(6, 4.4, 0.16, 0.58, 4, 1.5, 0x00c9d8, 0.08, 0.95),
-  heroShape(3, 3.1, -0.3, 1.12, 5, 2.2, 0x087bff, 0.06, 0.75),
-  heroShape(4, 3.7, 0.24, 0.22, 4, 1.9, 0x00c9d8, 0.055, 0.6),
+  makePolygon(6, 4.4, 0.16, 0.58, 4, 1.5, 0x00c9d8, 0.08, 0.95),
+  makePolygon(3, 3.1, -0.3, 1.12, 5, 2.2, 0x087bff, 0.06, 0.75),
+  makePolygon(4, 3.7, 0.24, 0.22, 4, 1.9, 0x00c9d8, 0.055, 0.6),
 ];
 
 export const getHeroShapes = (isSmallScreen: boolean): readonly HeroShape[] =>
@@ -116,6 +118,19 @@ export const pointerNormal = (client: number, size: number): number => {
 
 export const followAxis = (current: number, pointer: number, reach: number, step: number): number =>
   damp(current, pointer * reach, step);
+
+export const delayedFade = (elapsed: number, delay: number, duration: number): number => {
+  if (elapsed <= delay) return 0;
+  return introFade(elapsed - delay, duration);
+};
+
+export const parallaxOffset = (travel: number, index: number, amount: number): number => (travel - index) * amount;
+
+export const scrollRatio = (scrollTop: number, clientHeight: number, scrollHeight: number): number => {
+  const range = scrollHeight - clientHeight;
+  if (range <= 0) return 0;
+  return Math.min(1, Math.max(0, scrollTop / range));
+};
 
 export const posePolygonPoint = (
   index: number,
