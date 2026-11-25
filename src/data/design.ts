@@ -33,7 +33,7 @@ export const measure = {
   pageXWide: "2.5rem",
   pageXHero: "1.5rem",
   headerY: "1.5rem",
-  headerCompact: "0.75rem",
+  headerCompact: "0.25rem",
   headerDuration: "480ms",
   sectionY: "6rem",
   menuTop: "7rem",
